@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   CATEGORIES,
   GUIDE_NAME,
@@ -7,11 +8,27 @@ import {
 import CategoriesCard from "./CategoriesCard";
 
 const Footer = () => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const result = await fetch("https://web-dev.dev.kimo.ai/v1/categories");
+        const json = await result.json();
+        setCategories(json);
+        console.log(categories);
+      } catch (err) {
+        console.error("Error while fetching highlights ", err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <div className="mt-20 bg-[#E6F2F2] pt-10 pb-20 flex mx-auto max-md:flex-col ">
       <div className="w-1/4 max-md:mx-auto md:ml-auto max-md:w-3/4 ">
         <h2 className="text-base text-[#001A1A] mb-4">Categroies</h2>
-        {CATEGORIES.map((category, index) => (
+        {categories.map((category, index) => (
           <CategoriesCard key={index} category={category} />
         ))}
       </div>

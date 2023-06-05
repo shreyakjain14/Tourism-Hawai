@@ -11,13 +11,15 @@ import "swiper/css/scrollbar";
 // import required modules
 
 import useWindowWidth from "../utils/useWindowWidth";
-import { HIGHLIGHTS, IMG_ROOT } from "../utils/constants";
+import { IMG_ROOT } from "../utils/constants";
 import HighlightCard from "./HighlightCard";
 import Footer from "./Footer";
 import { disableScroll, enableScroll } from "../utils/scroll";
 
 const Dashboard = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [highlights, setHighlights] = useState([]);
+
   const windowWidth = useWindowWidth();
   const backgroundImageUrl =
     IMG_ROOT + "bg-img" + (windowWidth >= 559 ? "@2x" : "") + ".png";
@@ -49,6 +51,19 @@ const Dashboard = () => {
       enableScroll();
     }
   }, [windowWidth]);
+
+  useEffect(() => {
+    const fetchHighlight = async () => {
+      try {
+        const result = await fetch("https://web-dev.dev.kimo.ai/v1/highlights");
+        const json = await result.json();
+        setHighlights(json);
+      } catch (err) {
+        console.error("Error while fetching highlights ", err);
+      }
+    };
+    fetchHighlight();
+  }, []);
 
   return (
     <>
@@ -123,10 +138,11 @@ const Dashboard = () => {
             spaceBetween={8}
             slidesPerView={calculateSlides()}
             navigation
+            className="pb-2"
             // pagination={{ clickable: true }}
             // scrollbar={{ draggable: true }}
           >
-            {HIGHLIGHTS.map((highlight, index) => (
+            {highlights.map((highlight: any, index) => (
               <SwiperSlide key={index}>
                 <HighlightCard key={index} {...highlight} />
               </SwiperSlide>
