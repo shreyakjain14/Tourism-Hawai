@@ -6,22 +6,13 @@ import {
   IMG_ROOT,
 } from "../utils/constants";
 import CategoriesCard from "./CategoriesCard";
+import { fetchCategories } from "../utils/services";
 
 const Footer = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const result = await fetch("https://web-dev.dev.kimo.ai/v1/categories");
-        const json = await result.json();
-        setCategories(json);
-        console.log(categories);
-      } catch (err) {
-        console.error("Error while fetching highlights ", err);
-      }
-    };
-    fetchCategories();
+    fetchCategories(setCategories);
   }, []);
 
   return (
